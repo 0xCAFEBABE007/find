@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="wrap" style="max-width: 900px;">
+    <div class="top-bar">
+        <h1>📊 Admin Dashboard</h1>
+        <form class="logout-form" method="POST" action="{{ url_for('admin_logout') }}">
+            <button type="submit" class="secondary">Log out</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <div class="stat-grid">
+            <div class="stat-box">
+                <div class="stat-num">{{ stats.total_users }}</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num">{{ stats.solved_pairs }} / {{ stats.total_pairs }}</div>
+                <div class="stat-label">Pairs Matched</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num">{{ stats.assigned_words }} / {{ stats.total_words }}</div>
+                <div class="stat-label">Words Assigned</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num">{{ stats.unsolved_pairs }}</div>
+                <div class="stat-label">Pairs Still Open</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>✅ Matches (name + time)</h2>
+        {% if matches %}
+        <table>
+            <tr><th>User 1</th><th>User 2</th><th>Word 1</th><th>Word 2</th><th>Matched At (UTC)</th></tr>
+            {% for m in matches %}
+            <tr>
+                <td>{{ m['user1_name'] }}</td>
+                <td>{{ m['user2_name'] }}</td>
+                <td>{{ m['word1_text'] }}</td>
+                <td>{{ m['word2_text'] }}</td>
+                <td>{{ m['matched_at'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p class="sub">No matches yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h2>👥 Users</h2>
+        {% if users %}
+        <table>
+            <tr><th>Name</th><th>Word ID</th><th>Joined At (UTC)</th></tr>
+            {% for u in users %}
+            <tr>
+                <td>{{ u['name'] }}</td>
+                <td>{{ u['word_id'] }}</td>
+                <td>{{ u['created_at'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p class="sub">No users yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h2>🔤 All Words</h2>
+        <table>
+            <tr><th>Word ID</th><th>Text</th><th>Pair ID</th><th>Assigned</th><th>Pair Status</th></tr>
+            {% for w in words %}
+            <tr>
+                <td>{{ w['id'] }}</td>
+                <td>{{ w['text'] }}</td>
+                <td>{{ w['pair_id'] }}</td>
+                <td>{{ 'Yes' if w['assigned_uid'] else 'No' }}</td>
+                <td>
+                    {% if w['pair_solved'] %}
+                    <span class="badge solved">Solved</span>
+                    {% else %}
+                    <span class="badge open">Open</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+</body>
+</html>

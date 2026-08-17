@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: wordpair-app
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # Single worker process, multiple threads: SQLite only safely supports one
+    # writer process at a time. Threads let the app still handle many
+    # concurrent requests (e.g. 300 students scanning a QR code at once)
+    # without needing a second process fighting over the database file.
+    startCommand: gunicorn app:app --workers 1 --threads 8 --timeout 120
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DB_PATH
+        value: /var/data/wordpair.db
+      - key: CAPACITY
+        value: "300"
+    disk:
+      name: wordpair-data
+      mountPath: /var/data
+      sizeGB: 1

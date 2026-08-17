@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mismatched — Join</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="wrap">
+    <div class="card">
+        <h1>Welcome to IIITS</h1>
+        <p class="sub">Enter your name to get your word and find your match.</p>
+
+        {% if error %}
+        <div class="message error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <label for="name">Your name</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Alex" required autofocus>
+            <button type="submit">Get my word</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
