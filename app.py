@@ -81,11 +81,11 @@ SEED_PAIRS = [
    ("machine", "learning"),
    ("chole", "kulche"),
    ("breaking", "bad"),
-   ("Jadi","Buti")
-   ("Patal","Lok")
-   ("Grass","Hopper")
-   ("Ping","Pong")
-   ("Netflix","&Chill")
+   ("Jadi","Buti"),
+   ("Patal","Lok"),
+   ("Grass","Hopper"),
+   ("Ping","Pong"),
+   ("Netflix","&Chill"),
    
 ]
     
