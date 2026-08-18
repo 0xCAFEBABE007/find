@@ -3,11 +3,12 @@ import sqlite3
 import uuid
 import re
 import time
+import random
 from datetime import datetime
 from flask import Flask, request, render_template, redirect, url_for, session, g
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "iiitsfindone")
+app.secret_key = os.environ.get("SECRET_KEY", "iiitsfindone69")
 
 DB_PATH = os.environ.get("DB_PATH", os.path.join(os.path.dirname(__file__), "wordpair.db"))
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "naikav@0721")
@@ -22,73 +23,139 @@ CAPACITY = int(os.environ.get("CAPACITY", "300"))
 # first, in this order, before any auto-generated filler pairs.
 SEED_PAIRS = [
     
-    ("Rock", "Roll"),
+  ("Rock", "Roll"),
+
     ("Needle", "Thread"),
+
     ("Lock", "Key"),
+
     ("Mona", "Lisa"),
+
     ("Taj", "Mahal"),
+
     ("Eiffel", "Tower"),
+
     ("Big", "Ben"),
+
     ("dead", "lift"),
+
     ("Niagara", "Falls"),
+
     ("Golden", "Ratio"),
+
     ("Jantar", "Mantar"),
+
     ("6", "7"),
+
     ("stack", "overflow"),
+
     ("kuchu", "Puchu"),
+
     ("Aam", "Adami"),
+
     ("Jai", "Veeru"),
+
     ("Mogambo", "Khushhua"),
+
     ("Tenali", "Raman"),
+
     ("Sahara", "Desert"),
+
     ("Jalebi", "Fafda"),
+
     ("Hong", "Kong"),
+
     ("Birch", "Reduction"),
+
     ("Sri", "Lanka"),
+
     ("New", "Delhi"),
+
     ("Mahatma", "Gandhi"),
+
     ("Sherlock", "Holmes"),
+
     ("Harry", "Potter"),
+
     ("Genghis", "Khan"),
+
     ("Robin", "Hood"),
+
     ("Snow", "White"),
+
     ("Jack", "Sparrow"),
+
     ("Sleeping", "Beauty"),
+
     ("Bhagat", "Singh"),
+
     ("Abrahan","Lincoln"),
+
     ("Bhagavat","Geeta"),
+
     ("Silicon","Valley"),
+
     ("Milky","Way"),
+
     ("Panner","Tikka"),
+
     ("Frech","Fries"),
+
     ("Bermunda","Triangle"),
+
     ("Torjan","Horse"),
+
     ("Marie","Cuire"),
+
     ("Coca","Cola"),
+
     ("Periodic","Table"),
+
     ("Carbon","Dating"),
+
     ("Tylor","Swift"),
+
     ("Mini","Peka"),
+
    ("shrodinger", "cat"),
+
    ("black", "hole"),
+
    ("Golden", "Gate"),
+
    ("neural", "network"),
+
    ("dire", "wolf"),
+
    ("raksha","bandhan"),
+
    ("brain", "wash"),
+
    ("soviet", "union"),
+
    ("hanu", "man"),
+
    ("machine", "learning"),
+
    ("chole", "kulche"),
+
    ("breaking", "bad"),
+
    ("Jadi","Buti"),
+
    ("Patal","Lok"),
+
    ("Grass","Hopper"),
+
    ("Ping","Pong"),
+
    ("Netflix","&Chill"),
-   
+
+   ("Drona","Charya"),
+
+    ("Lakshman","Rekha"),
+
 ]
-    
 
 
 def build_seed_pairs(capacity):
@@ -147,6 +214,7 @@ def init_db():
             text TEXT NOT NULL,
             pair_id INTEGER NOT NULL,
             assigned_uid TEXT,
+            display_id INTEGER UNIQUE,
             FOREIGN KEY (pair_id) REFERENCES pairs(id)
         )
     """)
@@ -178,11 +246,27 @@ def init_db():
     existing = db.execute("SELECT COUNT(*) AS c FROM pairs").fetchone()["c"]
     if existing == 0:
         seed_pairs = build_seed_pairs(CAPACITY)
+        internal_ids = []
         for w1, w2 in seed_pairs:
             cur = db.execute("INSERT INTO pairs (solved) VALUES (0)")
             pair_id = cur.lastrowid
-            db.execute("INSERT INTO words (text, pair_id) VALUES (?, ?)", (w1, pair_id))
-            db.execute("INSERT INTO words (text, pair_id) VALUES (?, ?)", (w2, pair_id))
+            c1 = db.execute("INSERT INTO words (text, pair_id) VALUES (?, ?)", (w1, pair_id))
+            internal_ids.append(c1.lastrowid)
+            c2 = db.execute("INSERT INTO words (text, pair_id) VALUES (?, ?)", (w2, pair_id))
+            internal_ids.append(c2.lastrowid)
+        db.commit()
+
+        # Hand out random, unique 3-digit public IDs (100-999), independent
+        # of insertion/pair order, so seeing your own ID gives no clue about
+        # what your partner's ID might be. If more than 900 words are ever
+        # needed, fall back to a wider 4-digit range automatically.
+        total = len(internal_ids)
+        if total <= 900:
+            id_pool = random.sample(range(100, 1000), total)
+        else:
+            id_pool = random.sample(range(1000, 10000), total)
+        for internal_id, display_id in zip(internal_ids, id_pool):
+            db.execute("UPDATE words SET display_id = ? WHERE id = ?", (display_id, internal_id))
         db.commit()
 
     db.close()
@@ -234,7 +318,7 @@ def assign_word(db, uid, max_retries=25):
 
 
 def parse_combined_id(raw):
-    """Parse a combined id string like '3-7', '3,7', '3 7', '3+7' into two ints."""
+    """Parse a combined id string like '345-782', '345,782' into two ints."""
     parts = [p for p in re.split(r"[\s,\-+/]+", raw.strip()) if p]
     ids = []
     for p in parts:
@@ -298,15 +382,15 @@ def guess():
     success = False
 
     if len(ids) < 1:
-        message = "Please enter a valid word ID (yours and your partner's, e.g. '3-7')."
+        message = "Please enter a valid word ID (yours and your partner's, e.g. '345-782')."
     else:
         # Accept either just the partner's id, or both ids together
-        candidate_ids = [i for i in ids if i != my_word["id"]]
+        candidate_ids = [i for i in ids if i != my_word["display_id"]]
         if not candidate_ids:
             message = "That's just your own ID — enter your partner's word ID too."
         else:
             partner_id = candidate_ids[0]
-            partner_word = db.execute("SELECT * FROM words WHERE id = ?", (partner_id,)).fetchone()
+            partner_word = db.execute("SELECT * FROM words WHERE display_id = ?", (partner_id,)).fetchone()
 
             if partner_word is None:
                 message = f"No word found with ID {partner_id}."
@@ -339,13 +423,6 @@ def guess():
     )
 
 
-@app.route("/logout", methods=["POST"])
-def logout():
-    resp = redirect(url_for("index"))
-    resp.delete_cookie("uid")
-    return resp
-
-
 # ---------- Admin routes ----------
 
 @app.route("/admin", methods=["GET"])
@@ -354,7 +431,11 @@ def admin():
         return render_template("admin_login.html")
 
     db = get_db()
-    users = db.execute("SELECT * FROM users ORDER BY created_at DESC").fetchall()
+    users = db.execute("""
+        SELECT users.*, words.display_id AS word_display_id
+        FROM users JOIN words ON users.word_id = words.id
+        ORDER BY users.created_at DESC
+    """).fetchall()
     matches = db.execute("SELECT * FROM matches ORDER BY matched_at DESC").fetchall()
     words = db.execute("""
         SELECT words.*, pairs.solved AS pair_solved
