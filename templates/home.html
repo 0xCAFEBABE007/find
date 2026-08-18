@@ -20,7 +20,7 @@
         {% if my_pair['solved'] %}
         <div class="message success">✅ Your pair has already been matched!</div>
         {% else %}
-        <p class="sub">Find the person with the matching word, then enter both your word IDs below (e.g. "{{ my_word['display_id'] }}-782").</p>
+        <p class="sub">Find the person with the matching word, then enter both your word IDs below (e.g. "{{ my_word['display_id'] }}-xyz").</p>
         {% endif %}
     </div>
 
@@ -35,7 +35,7 @@
         <h2>Enter the combined word ID</h2>
         <form method="POST" action="{{ url_for('guess') }}">
             <label for="combined_id">Your ID + Partner's ID</label>
-            <input type="text" id="combined_id" name="combined_id" placeholder="e.g. {{ my_word['display_id'] }}-782" required autofocus>
+            <input type="text" id="combined_id" name="combined_id" placeholder="e.g. {{ my_word['display_id'] }}-xyz" required autofocus>
             <button type="submit">Check match</button>
         </form>
     </div>
