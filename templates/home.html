@@ -3,28 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MISMATCHED</title>
+    <title>MisMatched</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <div class="wrap">
     <div class="card">
-        <div class="top-bar">
-            <h1>👋 Hi, {{ user['name'] }}</h1>
-                <button type="submit" class="secondary">Log out</button>
-            </form>
-        </div>
+        <h1>Are U Ready {{ user['name'] }} ?</h1>
 
         <div class="word-display">
             <div class="sub">Your word is</div>
             <div class="word-text">{{ my_word['text'] }}</div>
-            <div class="word-id">ID: {{ my_word['id'] }}</div>
+            <div class="word-id">ID: {{ my_word['display_id'] }}</div>
         </div>
 
         {% if my_pair['solved'] %}
         <div class="message success">✅ Your pair has already been matched!</div>
         {% else %}
-        <p class="sub">Find the person with the matching word, then enter both your word IDs below</p>
+        <p class="sub">Find the person with the matching word, then enter both your word IDs below (e.g. "{{ my_word['display_id'] }}-782").</p>
         {% endif %}
     </div>
 
@@ -39,7 +35,7 @@
         <h2>Enter the combined word ID</h2>
         <form method="POST" action="{{ url_for('guess') }}">
             <label for="combined_id">Your ID + Partner's ID</label>
-            <input type="text" id="combined_id" name="combined_id" placeholder="e.g. {{ my_word['id'] }}-7" required autofocus>
+            <input type="text" id="combined_id" name="combined_id" placeholder="e.g. {{ my_word['display_id'] }}-782" required autofocus>
             <button type="submit">Check match</button>
         </form>
     </div>
