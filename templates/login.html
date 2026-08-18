@@ -5,13 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mismatched — Join</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.85)), 
+                        url('https://unsplash.com/photos/white-clouds-and-blue-sky-during-daytime-pqfkN8WcdR8') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+        }
+        .wrap {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 35px 30px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+        .card h1 {
+            margin-top: 0;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .sub {
+            color: #cbd5e1;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .message.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+        }
+        input[type="text"] {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        input[type="text"]::placeholder {
+            color: #64748b;
+        }
+        input[type="text"]:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+        button[type="submit"] {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.6);
+            transform: translateY(-1px);
+        }
+        .risk-warning {
+            display: block;
+            font-size: 11px;
+            color: #f87171;
+            text-align: right;
+            margin-top: -14px;
+            margin-bottom: 16px;
+            font-style: italic;
+            letter-spacing: 0.2px;
+        }
+        .footer-sig {
+            margin-top: 25px;
+            font-size: 12px;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 500;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <p style="font-family: Arial, sans-serif; font-style: italic; font-weight: bold; color: #333333;">
-  Welcome to IIIS 
-</p>
 <div class="wrap">
     <div class="card">
+        <h1>Welcome to IIITS</h1>
         <p class="sub">Enter your name to get your word and find your match.</p>
 
         {% if error %}
@@ -20,11 +145,14 @@
 
         <form method="POST" action="{{ url_for('login') }}">
             <label for="name">Your name</label>
-            <input type="text" id="name" name="name" placeholder="e.g. Tanish Kumar" required autofocus>
+            <input type="text" id="name" name="name" placeholder="e.g. Alex" required autofocus>
+            <span class="risk-warning">AT YOUR Own Risk</span>
             <button type="submit">Get my word</button>
         </form>
     </div>
+    <div class="footer-sig">
+        Designed by UG25CSE095
+    </div>
 </div>
-    <h1>by UG25CSE095<h1>
 </body>
 </html>
