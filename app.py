@@ -156,7 +156,11 @@ SEED_PAIRS = [
  ("Aryabhata", "Zero"),
     ("Ramanujan", "Infinity"),
  ("Bhishma", "Pitamah"),
-
+ ("Mine","Craft"),
+ ("Litti", "Chokha"),
+ ("Ninja", "Hatodi"),
+("Stetho","Scope"),
+ ("Thermo","meter"),
 ]
  
  
