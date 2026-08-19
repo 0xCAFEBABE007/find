@@ -117,14 +117,14 @@ SEED_PAIRS = [
  ("Silver","Surfure"),
  ("Fight","Club"),
  ("Donald","Duck"),
- ("",""),
- ("",""),
- ("",""),
- ("",""),
- ("",""),
- ("",""),
- ("",""),
- ("","")
+ ("Vikram","Betal"),
+ ("Alibaba","40chor"),
+ ("Pyramid","Giza"),
+ ("Monty","Python"),
+ ("Heisenberg","Uncertainty"),
+ ("Hubble","Telescope"),
+ ("Appolo","Eleven"),
+ ("Rajiv","Shorey")
  
 ]
  
