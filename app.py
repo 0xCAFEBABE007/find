@@ -201,7 +201,10 @@ SEED_PAIRS = [
  ("Heer","Ranja"),
  ("Red","Bull"),
  ("Bahubali","Katappa"),
- ("Luka","Chhuppi"),
+ ("Lukka","Chhuppi"),
+ ("William","Shakespeare"),
+ 
+ 
  
  
  
